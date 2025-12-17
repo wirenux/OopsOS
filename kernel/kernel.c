@@ -15,10 +15,23 @@ void sys_reboot(void) {
 }
 
 void sys_shutdown(void) {
-    // Only QEMU
-    outw(0x604, 0x2000);
+    term_clear(VGA_COLOR_WHITE, VGA_COLOR_BLACK);
+    term_init();
+    term_writestring(
+        "   ___                   ___  ____\n"
+        "  / _ \\  ___  _ __  ___ / _ \\/ ___|\n"
+        " | | | |/ _ \\| '_ \\/ __| | | \\___ \\\n"
+        " | |_| | (_) | |_) \\__ \\ |_| |___) |\n"
+        "  \\___/ \\___/| .__/|___/\\___/|____/\n"
+        "             |_|\n"
+    );
+    term_writestring("\nYOU CAN NOW PRESS THE POWER BUTTON\n");
+    asm volatile("cli");
 
-    term_writestring("\nShutdown failed.\n");
+    // 2. Infinite loop to prevent the CPU from ever moving forward
+    while(1) {
+        asm volatile("hlt");
+    }
 }
 
 static inline bool keyboard_data_available(void) {
