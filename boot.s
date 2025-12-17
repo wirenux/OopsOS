@@ -23,7 +23,7 @@ stack_top:
 _start:
 	mov $stack_top, %esp
 
-	call kernel_main ; func name in kernel.c
+	call kernel_main /* func name in kernel.c */
 
 	cli
 1:	hlt
