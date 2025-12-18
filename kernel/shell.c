@@ -148,22 +148,19 @@ void term_shell(void) {
     while (1) {
         if (keyboard_data_available()) {
             uint8_t scancode = inb(0x60);
-            if (scancode & 0x80) continue;
+            char c = handle_scancode(scancode);
+            if (!c) continue; // key release or shift press
 
-            if (scancode == 0x1C) { // ENTER
+            if (c == '\n') {
                 command_buffer[buffer_index] = '\0';
                 term_putchar('\n');
-
-                if (buffer_index > 0) {
-                    execute_command(command_buffer);
-                }
-
+                if (buffer_index > 0) execute_command(command_buffer);
                 buffer_index = 0;
                 term_writestring("> ");
                 continue;
             }
 
-            if (scancode == 0x0E) { // BACKSPACE
+            if (c == '\b') {
                 if (buffer_index > 0) {
                     buffer_index--;
                     terminal_column--;
@@ -172,12 +169,9 @@ void term_shell(void) {
                 continue;
             }
 
-            if (scancode < 128 && scancode_to_ascii[scancode]) {
-                char c = scancode_to_ascii[scancode];
-                if (buffer_index < 127) {
-                    command_buffer[buffer_index++] = c;
-                    term_putchar(c);
-                }
+            if (buffer_index < 127) {
+                command_buffer[buffer_index++] = c;
+                term_putchar(c);
             }
         }
     }
