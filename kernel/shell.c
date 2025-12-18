@@ -67,7 +67,17 @@ void cmd_echo(int argc, char* argv[]) {
                 term_putchar(c);
             }
         }
+
+        if (i < argc - 1) {
+            if (rainbowFlag) {
+                term_putchar_color(' ', rainbowColors[colorIndex % colorCount] | (VGA_COLOR_BLACK << 4));
+                colorIndex++;
+            } else {
+                term_putchar(' ');
+            }
+        }
     }
+
 
     term_writestring("\n");
 }
