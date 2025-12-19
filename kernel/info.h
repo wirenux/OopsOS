@@ -2,7 +2,8 @@
 #define INFO_H
 
 extern const char* kernel_version;
-extern char* username;
-extern char* password;
+extern char username[64];
+extern char hostname[64];
+extern char* directory;
 
 #endif

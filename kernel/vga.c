@@ -1,5 +1,6 @@
 #include "vga.h"
 #include "libc.h"
+#include "keyboard.h"
 #include <stdarg.h>
 
 #define VGA_WIDTH 80
@@ -156,4 +157,13 @@ char* term_readline(char* buffer, size_t max) {
             term_putchar(c);
         }
     }
+}
+
+void term_print_color(const char* str, uint8_t color) {
+    for (size_t i = 0; str[i]; i++)
+        term_putchar_color(str[i], color);
+}
+
+void term_printf_color(int fg, const char* s) {
+    term_print_color(s, fg | (VGA_COLOR_BLACK << 4));
 }

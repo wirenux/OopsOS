@@ -107,13 +107,21 @@ void cmd_version() {
     term_printf("OopsOS - Version: %s\n", kernel_version);
 }
 
-void cmd_setup_user() {
+void cmd_setup() {
     char buf[64];
 
     term_printf("Enter username: ");
     term_readline(buf, sizeof(buf));
+    if (buf[0] != '\0') {   // empty (user just press enter)
+        strcpy(username, buf);
+    }
 
-    username = buf;
+    term_printf("Enter hostname: ");
+    term_readline(buf, sizeof(buf));
+    if (buf[0] != '\0') {   // same
+        strcpy(hostname, buf);
+    }
+
     term_printf("Done\n");
 }
 
@@ -143,6 +151,22 @@ void cmd_ascii() {
     );
 }
 
+void print_prompt(void) {
+    term_printf_color(VGA_COLOR_LIGHT_GREEN, username);
+
+    term_putchar_color('@', VGA_COLOR_LIGHT_GREEN | (VGA_COLOR_BLACK << 4));
+
+    term_printf_color(VGA_COLOR_LIGHT_GREEN, hostname);
+
+    term_putchar_color(':', VGA_COLOR_LIGHT_GREY | (VGA_COLOR_BLACK << 4));
+
+    term_printf_color(VGA_COLOR_LIGHT_BLUE, directory);
+
+    term_putchar_color('$', VGA_COLOR_LIGHT_GREY | (VGA_COLOR_BLACK << 4));
+    term_putchar(' ');
+}
+
+
 // === COMMAND TABLE ===
 
 Command commands[] = {
@@ -152,7 +176,7 @@ Command commands[] = {
     {"echo", "Print something one the screen",  cmd_echo},
     {"help", "Show this help",                  cmd_help},
     {"reboot",   "Reboot the system",           cmd_reboot},
-    {"setup_user", "Setup current user",        cmd_setup_user},
+    {"setup", "Setup all",                      cmd_setup},
     {"shutdown", "Shutdown the system",         cmd_shutdown},
     {"version", "Show version of the kernel",   cmd_version},
     {"whoami", "Show current user",             cmd_whoami},
@@ -200,7 +224,8 @@ void term_shell(void) {
     char command_buffer[128];
     int buffer_index = 0;
 
-    term_printf("> ");
+    buffer_length = 0;
+    print_prompt();
 
     while (1) {
         if (keyboard_data_available()) {
@@ -256,7 +281,9 @@ void term_shell(void) {
                 }
 
                 buffer_index = 0;
-                term_printf("> ");
+                buffer_length = 0;
+                print_prompt();
+
                 continue;
             }
 

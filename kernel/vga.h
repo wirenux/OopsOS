@@ -31,5 +31,7 @@ void term_putchar_color(char c, uint8_t color);
 uint8_t vga_entry_color(enum vga_color fg, enum vga_color bg);
 void term_printf(const char* fmt, ...);
 char* term_readline(char* buffer, size_t max);
+void term_print_color(const char* str, uint8_t color);
+void term_printf_color(int fg, const char* s);
 
 #endif
