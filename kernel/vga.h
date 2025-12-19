@@ -4,6 +4,10 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#define VGA_WIDTH 80
+#define VGA_HEIGHT 25
+#define VGA_MEMORY 0xB8000
+
 enum vga_color {
     VGA_COLOR_BLACK = 0, VGA_COLOR_BLUE = 1, VGA_COLOR_GREEN = 2,
     VGA_COLOR_CYAN = 3, VGA_COLOR_RED = 4, VGA_COLOR_MAGENTA = 5,

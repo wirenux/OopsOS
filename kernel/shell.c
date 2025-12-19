@@ -7,6 +7,10 @@
 
 char last_command[CMD_HISTORY_SIZE] = {0};
 
+char command_buffer[128];
+int buffer_index = 0;   // cursor position
+int buffer_length = 0;  // total chars in buffer
+
 void cmd_reboot() {
     term_printf("Rebooting...\n");
     while (inb(0x64) & 0x02);
@@ -188,22 +192,42 @@ void term_shell(void) {
     while (1) {
         if (keyboard_data_available()) {
             uint8_t scancode = inb(0x60);
+            int current_buffer_length = buffer_index;
 
-            // UP = 0x48
+            // UP
             if (scancode == 0x48) {
+                // clear line
                 while (buffer_index > 0) {
                     buffer_index--;
                     terminal_column--;
                     term_putchar_at(' ', terminal_row, terminal_column);
                 }
 
+                // copy last command
                 int len = strlen(last_command);
                 for (int i = 0; i < len; i++) {
                     command_buffer[i] = last_command[i];
                     term_putchar(command_buffer[i]);
                 }
-                buffer_index = len;
 
+                buffer_index = len; // cursor at end
+                buffer_length = len; // full buffer
+                continue;
+            }
+
+            // LEFT
+            if (scancode == 0x4B && buffer_index > 0) {
+                buffer_index--;
+                terminal_column--;
+                update_cursor(terminal_row, terminal_column);
+                continue;
+            }
+
+            // RIGHT
+            if (scancode == 0x4D && buffer_index < buffer_length) {
+                buffer_index++;
+                terminal_column++;
+                update_cursor(terminal_row, terminal_column);
                 continue;
             }
 
@@ -234,8 +258,11 @@ void term_shell(void) {
             }
 
             if (buffer_index < 127) {
-                command_buffer[buffer_index++] = c;
-                term_putchar(c);
+                command_buffer[buffer_index] = c;       // put char at cursor
+                buffer_index++;                         // move cursor forward
+                if (buffer_index > buffer_length)       // update buffer length if we added new char
+                    buffer_length = buffer_index;
+                term_putchar(c);                        // print char on screen
             }
         }
     }

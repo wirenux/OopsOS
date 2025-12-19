@@ -5,4 +5,4 @@
 - [x] keyboard shift (ex: shift+a = A)
 - [x] add UP to get last command
 - [ ] simple BEEP
-- [ ] LEFT & RIGHT for cursor
+- [x] LEFT & RIGHT for cursor
