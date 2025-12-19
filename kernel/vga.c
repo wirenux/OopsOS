@@ -124,3 +124,36 @@ void term_printf(const char* fmt, ...) {
 
     va_end(args);
 }
+
+char* term_readline(char* buffer, size_t max) {
+    size_t i = 0;
+
+    while (1) {
+        if (!keyboard_data_available())
+            continue;
+
+        uint8_t scancode = inb(0x60);
+        char c = handle_scancode(scancode);
+        if (!c) continue;
+
+        if (c == '\n') {
+            term_putchar('\n');
+            buffer[i] = '\0';
+            return buffer;
+        }
+
+        if (c == '\b') {
+            if (i > 0) {
+                i--;
+                terminal_column--;
+                term_putchar_at(' ', terminal_row, terminal_column);
+            }
+            continue;
+        }
+
+        if (i < max - 1) {
+            buffer[i++] = c;
+            term_putchar(c);
+        }
+    }
+}

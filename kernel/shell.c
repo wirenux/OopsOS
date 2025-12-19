@@ -83,7 +83,6 @@ void cmd_echo(int argc, char* argv[]) {
     term_printf("\n");
 }
 
-
 void cmd_clear() {
     term_clear(VGA_COLOR_WHITE, VGA_COLOR_BLACK);
     terminal_column = 0;
@@ -101,6 +100,21 @@ void cmd_version() {
     term_printf("OopsOS - Version: %s\n", kernel_version);
 }
 
+void cmd_setup_user() {
+    char buf[64];
+
+    term_printf("Enter username: ");
+    term_readline(buf, sizeof(buf));
+
+    username = buf; // or copy it safely
+    term_printf("Done\n");
+}
+
+
+void cmd_whoami() {
+    term_printf("%s\n", username);
+}
+
 // === COMMAND TABLE ===
 
 Command commands[] = {
@@ -110,6 +124,8 @@ Command commands[] = {
     {"reboot",   "Reboot the system",           cmd_reboot},
     {"shutdown", "Shutdown the system",         cmd_shutdown},
     {"version", "Show version of the kernel",   cmd_version},
+    {"whoami", "Show current user",             cmd_whoami},
+    {"stpUser", "Setup current user",           cmd_setup_user},
     {NULL, NULL, NULL}
 };
 
@@ -153,7 +169,7 @@ void term_shell(void) {
     char command_buffer[128];
     int buffer_index = 0;
 
-    term_printf("\n> ");
+    term_printf("> ");
 
     while (1) {
         if (keyboard_data_available()) {
