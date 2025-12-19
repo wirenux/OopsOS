@@ -3,6 +3,9 @@
 #include "libc.h"
 #include "keyboard.h"
 #include "info.h"
+#define CMD_HISTORY_SIZE 128
+
+char last_command[CMD_HISTORY_SIZE] = {0};
 
 void cmd_reboot() {
     term_printf("Rebooting...\n");
@@ -185,13 +188,37 @@ void term_shell(void) {
     while (1) {
         if (keyboard_data_available()) {
             uint8_t scancode = inb(0x60);
+
+            // UP = 0x48
+            if (scancode == 0x48) {
+                while (buffer_index > 0) {
+                    buffer_index--;
+                    terminal_column--;
+                    term_putchar_at(' ', terminal_row, terminal_column);
+                }
+
+                int len = strlen(last_command);
+                for (int i = 0; i < len; i++) {
+                    command_buffer[i] = last_command[i];
+                    term_putchar(command_buffer[i]);
+                }
+                buffer_index = len;
+
+                continue;
+            }
+
             char c = handle_scancode(scancode);
-            if (!c) continue; // key release or shift press
+            if (!c) continue;
 
             if (c == '\n') {
                 command_buffer[buffer_index] = '\0';
                 term_putchar('\n');
-                if (buffer_index > 0) execute_command(command_buffer);
+
+                if (buffer_index > 0) {
+                    strcpy(last_command, command_buffer); // save last cmd
+                    execute_command(command_buffer);
+                }
+
                 buffer_index = 0;
                 term_printf("> ");
                 continue;

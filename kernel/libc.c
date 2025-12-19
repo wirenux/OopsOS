@@ -8,6 +8,14 @@ int strcmp(const char* s1, const char* s2) {        // ret 0 if s1 & s2 -> same
     return *(unsigned char*)s1 - *(unsigned char*)s2;
 }
 
+void strcpy(char* dest, const char* src) {
+    while (*src) {
+        *dest++ = *src++;
+    }
+    *dest = '\0';
+}
+
+
 size_t strlen(const char* str) {
     size_t len = 0;
     while (str[len]) len++;
