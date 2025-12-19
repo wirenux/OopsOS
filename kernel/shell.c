@@ -132,18 +132,31 @@ void cmd_date() {
     );
 }
 
+void cmd_ascii() {
+    term_printf(
+        "   ___                   ___  ____\n"
+        "  / _ \\  ___  _ __  ___ / _ \\/ ___|\n"
+        " | | | |/ _ \\| '_ \\/ __| | | \\___ \\\n"
+        " | |_| | (_) | |_) \\__ \\ |_| |___) |\n"
+        "  \\___/ \\___/| .__/|___/\\___/|____/\n"
+        "             |_|\n"
+    );
+}
+
 // === COMMAND TABLE ===
 
 Command commands[] = {
+    {"ascii", "Show OopsOS logo",               cmd_ascii},
     {"clear", "Clear the screen",               cmd_clear},
+    {"date", "Show current date/time (UTC)",    cmd_date},
     {"echo", "Print something one the screen",  cmd_echo},
     {"help", "Show this help",                  cmd_help},
     {"reboot",   "Reboot the system",           cmd_reboot},
+    {"setup_user", "Setup current user",        cmd_setup_user},
     {"shutdown", "Shutdown the system",         cmd_shutdown},
     {"version", "Show version of the kernel",   cmd_version},
     {"whoami", "Show current user",             cmd_whoami},
-    {"setup_user", "Setup current user",        cmd_setup_user},
-    {"date", "Show current date/time (UTC)",    cmd_date},
+
     {NULL, NULL, NULL}
 };
 
@@ -192,7 +205,6 @@ void term_shell(void) {
     while (1) {
         if (keyboard_data_available()) {
             uint8_t scancode = inb(0x60);
-            int current_buffer_length = buffer_index;
 
             // UP
             if (scancode == 0x48) {

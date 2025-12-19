@@ -6,3 +6,4 @@
 - [x] add UP to get last command
 - [ ] simple BEEP
 - [x] LEFT & RIGHT for cursor
+- [ ] add pong
