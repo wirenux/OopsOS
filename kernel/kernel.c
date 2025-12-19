@@ -3,9 +3,10 @@
 #include "keyboard.h"
 #include "shell.h"
 #include "libc.h"
+#include "info.h"
 
 void print_logo(void) {
-    term_writestring(
+    term_printf(
         "   ___                   ___  ____\n"
         "  / _ \\  ___  _ __  ___ / _ \\/ ___|\n"
         " | | | |/ _ \\| '_ \\/ __| | | \\___ \\\n"
@@ -21,8 +22,8 @@ void kernel_main(void) {
 
     // Splash screen
     print_logo();
-    term_writestring("   OopsOS v0.? (c) 2025 squach90\n");
-    term_writestring("   Press ENTER to start...\n");
+    term_printf("   OopsOS v%s (c) 2025 squach90\n", kernel_version);
+    term_printf("   Press ENTER to start...\n");
 
     // Wait for ENTER
     while (1) {

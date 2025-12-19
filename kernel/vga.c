@@ -1,5 +1,6 @@
 #include "vga.h"
 #include "libc.h"
+#include <stdarg.h>
 
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25
@@ -81,4 +82,45 @@ void term_putchar_color(char c, uint8_t color) {
         terminal_row++;
         if (terminal_row >= 25) terminal_row = 0;
     }
+}
+
+void term_printf(const char* fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+
+    for (size_t i = 0; fmt[i]; i++) {
+        if (fmt[i] == '%' && fmt[i + 1]) {
+            i++;
+            switch (fmt[i]) {
+                case 's': {
+                    const char* s = va_arg(args, const char*);
+                    term_writestring(s);
+                    break;
+                }
+                case 'd': {
+                    int d = va_arg(args, int);
+                    char buf[16];
+                    itoa(d, buf, 10);
+                    term_writestring(buf);
+                    break;
+                }
+                case 'c': {
+                    char c = (char)va_arg(args, int);
+                    term_putchar(c);
+                    break;
+                }
+                case '%':
+                    term_putchar('%');
+                    break;
+                default:
+                    term_putchar('%');
+                    term_putchar(fmt[i]);
+                    break;
+            }
+        } else {
+            term_putchar(fmt[i]);
+        }
+    }
+
+    va_end(args);
 }

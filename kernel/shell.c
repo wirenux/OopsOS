@@ -2,19 +2,20 @@
 #include "vga.h"
 #include "libc.h"
 #include "keyboard.h"
+#include "info.h"
 
 void cmd_reboot() {
-    term_writestring("Rebooting...\n");
+    term_printf("Rebooting...\n");
     while (inb(0x64) & 0x02);
     outb(0x64, 0xFE);
 }
 
 void cmd_shutdown() {
-    term_writestring("Shutting down...\n");
+    term_printf("Shutting down...\n");
     term_clear(VGA_COLOR_WHITE, VGA_COLOR_BLACK);
     terminal_column = 0;
     terminal_row = 0;
-    term_writestring(
+    term_printf(
         "   ___                   ___  ____\n"
         "  / _ \\  ___  _ __  ___ / _ \\/ ___|\n"
         " | | | |/ _ \\| '_ \\/ __| | | \\___ \\\n"
@@ -22,7 +23,7 @@ void cmd_shutdown() {
         "  \\___/ \\___/| .__/|___/\\___/|____/\n"
         "             |_|\n"
     );
-    term_writestring("\nYOU CAN NOW PRESS THE POWER BUTTON\n");
+    term_printf("\nYOU CAN NOW PRESS THE POWER BUTTON\n");
 
     asm volatile("cli");
     while(1) {
@@ -79,7 +80,7 @@ void cmd_echo(int argc, char* argv[]) {
     }
 
 
-    term_writestring("\n");
+    term_printf("\n");
 }
 
 
@@ -90,14 +91,14 @@ void cmd_clear() {
 }
 
 void cmd_help() {
-    term_writestring("Available commands:\n");
+    term_printf("Available commands:\n");
     for (int i = 0; commands[i].name != NULL; i++) {
-        term_writestring("  ");
-        term_writestring(commands[i].name);
-        term_writestring(" - ");
-        term_writestring(commands[i].description);
-        term_writestring("\n");
+        term_printf("   %s - %s\n", commands[i].name, commands[i].description);
     }
+}
+
+void cmd_version() {
+    term_printf("OopsOS - Version: %s\n", kernel_version);
 }
 
 // === COMMAND TABLE ===
@@ -108,6 +109,7 @@ Command commands[] = {
     {"help", "Show this help",                  cmd_help},
     {"reboot",   "Reboot the system",           cmd_reboot},
     {"shutdown", "Shutdown the system",         cmd_shutdown},
+    {"version", "Show version of the kernel",   cmd_version},
     {NULL, NULL, NULL}
 };
 
@@ -144,16 +146,14 @@ void execute_command(char* input) {
         }
     }
 
-    term_writestring("Unknown command: ");
-    term_writestring(argv[0]);
-    term_writestring("\n");
+    term_printf("Unknown command: %s \n", argv[0]);
 }
 
 void term_shell(void) {
     char command_buffer[128];
     int buffer_index = 0;
 
-    term_writestring("\n> ");
+    term_printf("\n> ");
 
     while (1) {
         if (keyboard_data_available()) {
@@ -166,7 +166,7 @@ void term_shell(void) {
                 term_putchar('\n');
                 if (buffer_index > 0) execute_command(command_buffer);
                 buffer_index = 0;
-                term_writestring("> ");
+                term_printf("> ");
                 continue;
             }
 

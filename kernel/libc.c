@@ -27,3 +27,47 @@ void outb(uint16_t port, uint8_t val) {
 void outw(uint16_t port, uint16_t val) {
     asm volatile ("outw %0, %1" : : "a"(val), "Nd"(port));
 }
+
+char* itoa(int value, char* buffer, int base) {
+    char* ptr = buffer;
+    char* ptr1 = buffer;
+    char tmp_char;
+    int tmp_value;
+
+    if (base < 2 || base > 36) {
+        *buffer = '\0';
+        return buffer;
+    }
+
+    if (value == 0) {
+        buffer[0] = '0';
+        buffer[1] = '\0';
+        return buffer;
+    }
+
+    int sign = 0;
+    if (value < 0 && base == 10) {
+        sign = 1;
+        value = -value;
+    }
+
+    while (value) {
+        tmp_value = value;
+        value /= base;
+        *ptr++ = "0123456789abcdefghijklmnopqrstuvwxyz"[tmp_value - value * base];
+    }
+
+    if (sign) {
+        *ptr++ = '-';
+    }
+
+    *ptr-- = '\0';
+
+    while (ptr1 < ptr) {
+        tmp_char = *ptr;
+        *ptr-- = *ptr1;
+        *ptr1++ = tmp_char;
+    }
+
+    return buffer;
+}
