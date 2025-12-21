@@ -11,13 +11,17 @@ char command_buffer[128];
 int buffer_index = 0;   // cursor position
 int buffer_length = 0;  // total chars in buffer
 
-void cmd_reboot() {
+void cmd_reboot(int argc, char **argv) {
+    (void)argc;
+    (void)argv;
     term_printf("Rebooting...\n");
     while (inb(0x64) & 0x02);
     outb(0x64, 0xFE);
 }
 
-void cmd_shutdown() {
+void cmd_shutdown(int argc, char **argv) {
+    (void)argc;
+    (void)argv;
     term_printf("Shutting down...\n");
     term_clear(VGA_COLOR_WHITE, VGA_COLOR_BLACK);
     terminal_column = 0;
@@ -90,24 +94,32 @@ void cmd_echo(int argc, char* argv[]) {
     term_printf("\n");
 }
 
-void cmd_clear() {
+void cmd_clear(int argc, char **argv) {
+    (void)argc;
+    (void)argv;
     term_clear(VGA_COLOR_WHITE, VGA_COLOR_BLACK);
     terminal_column = 0;
     terminal_row = 0;
 }
 
-void cmd_help() {
+void cmd_help(int argc, char **argv) {
+    (void)argc;
+    (void)argv;
     term_printf("Available commands:\n");
     for (int i = 0; commands[i].name != NULL; i++) {
         term_printf("   %s - %s\n", commands[i].name, commands[i].description);
     }
 }
 
-void cmd_version() {
+void cmd_version(int argc, char **argv) {
+    (void)argc;
+    (void)argv;
     term_printf("OopsOS - Version: %s\n", kernel_version);
 }
 
-void cmd_setup() {
+void cmd_setup(int argc, char **argv) {
+    (void)argc;
+    (void)argv;
     char buf[64];
 
     term_printf("Enter username: ");
@@ -125,11 +137,15 @@ void cmd_setup() {
     term_printf("Done\n");
 }
 
-void cmd_whoami() {
+void cmd_whoami(int argc, char **argv) {
+    (void)argc;
+    (void)argv;
     term_printf("%s\n", username);
 }
 
-void cmd_date() {
+void cmd_date(int argc, char **argv) {
+    (void)argc;
+    (void)argv;
     struct rtc_time t;
     rtc_read_time(&t);
 
@@ -140,7 +156,9 @@ void cmd_date() {
     );
 }
 
-void cmd_ascii() {
+void cmd_ascii(int argc, char **argv) {
+    (void)argc;  // suppress unused variable warning
+    (void)argv;
     term_printf(
         "   ___                   ___  ____\n"
         "  / _ \\  ___  _ __  ___ / _ \\/ ___|\n"
