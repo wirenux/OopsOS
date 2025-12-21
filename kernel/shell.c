@@ -207,7 +207,8 @@ Command commands[] = {
     {"version", "Show version of the kernel",   cmd_version},
     {"whoami", "Show current user",             cmd_whoami},
 
-    {"dodge", NULL, cmd_dodge}, // hidden cmd
+    {"dodger", NULL,                            cmd_dodge}, // hidden cmd
+
     {NULL, NULL, NULL}
 };
 

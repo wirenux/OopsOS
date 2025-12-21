@@ -4,7 +4,20 @@
 
 - [x] keyboard shift (ex: shift+a = A)
 - [x] add UP to get last command
-- [ ] simple BEEP
 - [x] LEFT & RIGHT for cursor
+
+### Sound
+
+- [ ] simple BEEP
+
+### Filesystem
+
+- [ ] make a file sys
+
+### Games
+
+***Dodger***
+
 - [x] add game
-- [ ] add score in game
+- [x] add score in game
+- [ ] save highScore

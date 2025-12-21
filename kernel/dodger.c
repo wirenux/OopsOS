@@ -6,22 +6,29 @@
 #define WIDTH 80
 #define HEIGHT 20
 
-static unsigned int seed = 123456; // any number
+static uint32_t seed;
 
 int score = 0;
+int highScore = 0;
+int lines = 0;
+
+void init_seed() {
+    seed = timestamp(); // use time to set seed
+}
 
 unsigned int rand(void) {
     seed = seed * 1103515245 + 12345;
     return (seed / 65536) % 32768;
 }
 
-// simple delay helper
 void delay(int loops) {
     for (volatile int i = 0; i < loops; i++);
 }
 
 void game_dodge() {
     term_clear(VGA_COLOR_WHITE, VGA_COLOR_BLACK);
+    score = 0;
+    lines = 0;
 
     char grid[HEIGHT][WIDTH];
     for (int y = 0; y < HEIGHT; y++)
@@ -77,6 +84,11 @@ void game_dodge() {
             // new top row random blocks
             for (int x = 0; x < WIDTH; x++)
                 grid[0][x] = (rand() % 10 == 0) ? '#' : ' ';
+
+            lines++;
+            if (lines >= 20) {
+                score++;
+            }
         }
 
         // Draw the grid
@@ -87,12 +99,18 @@ void game_dodge() {
         // Draw the player
         term_putchar_at_color('@', player_y, player_x, VGA_COLOR_LIGHT_BLUE);
 
-        term_printf_at_color(24, 0,  VGA_COLOR_LIGHT_GREEN ,"Score: ");
+        term_printf_at_color(24, 0, VGA_COLOR_LIGHT_GREEN, "Score: %d", score);
 
         // Check collision
         if (grid[player_y][player_x] == '#') {
             cmd_clear(VGA_COLOR_WHITE, VGA_COLOR_BLACK);
-            term_printf("Game Over!\n");
+            score--;
+            if (score >= highScore) {
+                highScore = score;
+            }
+            term_printf_color(VGA_COLOR_LIGHT_RED ,"Game Over!\n");
+            term_printf("Score: %d\n", score);
+            term_printf("High Score: %d\n", highScore);
             break;
         }
 

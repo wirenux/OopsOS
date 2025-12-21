@@ -140,3 +140,35 @@ void rtc_read_time(struct rtc_time* t) {
     t->month = month;
     t->year  = 2000 + year; // usually
 }
+
+int is_leap_year(int year) {
+    return (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
+}
+
+// Convert RTC time to real Unix timestamp
+uint32_t timestamp() {
+    struct rtc_time t;
+    rtc_read_time(&t);
+
+    // Number of days per month
+    const int days_in_month[] = { 31,28,31,30,31,30,31,31,30,31,30,31 };
+
+    uint32_t days = 0;
+
+    // Add days for all years since 1970
+    for (int y = 1970; y < t.year; y++) {
+        days += 365 + is_leap_year(y);
+    }
+
+    // Add days for months this year
+    for (int m = 1; m < t.month; m++) {
+        days += days_in_month[m-1];
+        if (m == 2 && is_leap_year(t.year)) days++; // Feb leap day
+    }
+
+    // Add days this month
+    days += t.day - 1;
+
+    uint32_t seconds = days*86400 + t.hour*3600 + t.min*60 + t.sec;
+    return seconds;
+}
