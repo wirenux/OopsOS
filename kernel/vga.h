@@ -33,5 +33,8 @@ void term_printf(const char* fmt, ...);
 char* term_readline(char* buffer, size_t max);
 void term_print_color(const char* str, uint8_t color);
 void term_printf_color(int fg, const char* s);
+void term_printf_at(size_t row, size_t col, const char* fmt, ...);
+void term_printf_at_color(size_t row, size_t col, uint8_t color, const char* fmt, ...);
+void term_putchar_at_color(char c, size_t row, size_t col, uint8_t color);
 
 #endif

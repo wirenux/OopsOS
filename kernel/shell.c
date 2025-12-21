@@ -107,7 +107,8 @@ void cmd_help(int argc, char **argv) {
     (void)argv;
     term_printf("Available commands:\n");
     for (int i = 0; commands[i].name != NULL; i++) {
-        term_printf("   %s - %s\n", commands[i].name, commands[i].description);
+        if (commands[i].description)  // only print if description exists
+            term_printf("   %s - %s\n", commands[i].name, commands[i].description);
     }
 }
 
@@ -184,6 +185,13 @@ void print_prompt(void) {
     term_putchar(' ');
 }
 
+void cmd_dodge(int argc, char **argv) {
+    (void)argc;
+    (void)argv;
+    game_dodge();
+}
+
+
 
 // === COMMAND TABLE ===
 
@@ -199,6 +207,7 @@ Command commands[] = {
     {"version", "Show version of the kernel",   cmd_version},
     {"whoami", "Show current user",             cmd_whoami},
 
+    {"dodge", NULL, cmd_dodge}, // hidden cmd
     {NULL, NULL, NULL}
 };
 

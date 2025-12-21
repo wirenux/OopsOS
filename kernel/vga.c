@@ -85,6 +85,24 @@ void term_putchar_color(char c, uint8_t color) {
     }
 }
 
+void term_putchar_at_color(char c, size_t row, size_t col, uint8_t color) {
+    if (c == '\n') {
+        terminal_column = 0;
+        terminal_row++;
+        if (terminal_row >= 25) terminal_row = 0;
+        return;
+    }
+
+    if (row >= 25 || col >= 80) return;
+
+    size_t index = row * 80 + col;
+    uint16_t* vga = (uint16_t*)0xB8000;
+    vga[index] = ((uint16_t)color << 8) | (uint8_t)c;
+
+    update_cursor(row, col);
+}
+
+
 void term_printf(const char* fmt, ...) {
     va_list args;
     va_start(args, fmt);
@@ -125,6 +143,141 @@ void term_printf(const char* fmt, ...) {
 
     va_end(args);
 }
+
+void term_printf_at(size_t row, size_t col, const char* fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+
+    size_t cur_row = row;
+    size_t cur_col = col;
+
+    for (size_t i = 0; fmt[i]; i++) {
+        if (fmt[i] == '%' && fmt[i + 1]) {
+            i++;
+            switch (fmt[i]) {
+                case 's': {
+                    const char* s = va_arg(args, const char*);
+                    for (size_t j = 0; s[j]; j++) {
+                        term_putchar_at(s[j], cur_row, cur_col);
+                        cur_col++;
+                        if (cur_col >= VGA_WIDTH) { cur_col = 0; cur_row++; }
+                        if (cur_row >= VGA_HEIGHT) cur_row = 0;
+                    }
+                    break;
+                }
+                case 'd': {
+                    int d = va_arg(args, int);
+                    char buf[16];
+                    itoa(d, buf, 10);
+                    for (size_t j = 0; buf[j]; j++) {
+                        term_putchar_at(buf[j], cur_row, cur_col);
+                        cur_col++;
+                        if (cur_col >= VGA_WIDTH) { cur_col = 0; cur_row++; }
+                        if (cur_row >= VGA_HEIGHT) cur_row = 0;
+                    }
+                    break;
+                }
+                case 'c': {
+                    char c = (char)va_arg(args, int);
+                    term_putchar_at(c, cur_row, cur_col);
+                    cur_col++;
+                    if (cur_col >= VGA_WIDTH) { cur_col = 0; cur_row++; }
+                    if (cur_row >= VGA_HEIGHT) cur_row = 0;
+                    break;
+                }
+                case '%':
+                    term_putchar_at('%', cur_row, cur_col);
+                    cur_col++;
+                    if (cur_col >= VGA_WIDTH) { cur_col = 0; cur_row++; }
+                    if (cur_row >= VGA_HEIGHT) cur_row = 0;
+                    break;
+                default:
+                    term_putchar_at('%', cur_row, cur_col);
+                    cur_col++;
+                    term_putchar_at(fmt[i], cur_row, cur_col);
+                    cur_col++;
+                    if (cur_col >= VGA_WIDTH) { cur_col = 0; cur_row++; }
+                    if (cur_row >= VGA_HEIGHT) cur_row = 0;
+                    break;
+            }
+        } else {
+            term_putchar_at(fmt[i], cur_row, cur_col);
+            cur_col++;
+            if (cur_col >= VGA_WIDTH) { cur_col = 0; cur_row++; }
+            if (cur_row >= VGA_HEIGHT) cur_row = 0;
+        }
+    }
+
+    va_end(args);
+}
+
+void term_printf_at_color(size_t row, size_t col, uint8_t color, const char* fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+
+    size_t cur_row = row;
+    size_t cur_col = col;
+
+    for (size_t i = 0; fmt[i]; i++) {
+        if (fmt[i] == '%' && fmt[i + 1]) {
+            i++;
+            switch (fmt[i]) {
+                case 's': {
+                    const char* s = va_arg(args, const char*);
+                    for (size_t j = 0; s[j]; j++) {
+                        term_putchar_at_color(s[j], cur_row, cur_col, color);
+                        cur_col++;
+                        if (cur_col >= VGA_WIDTH) { cur_col = 0; cur_row++; }
+                        if (cur_row >= VGA_HEIGHT) cur_row = 0;
+                    }
+                    break;
+                }
+                case 'd': {
+                    int d = va_arg(args, int);
+                    char buf[16];
+                    itoa(d, buf, 10);
+                    for (size_t j = 0; buf[j]; j++) {
+                        term_putchar_at_color(buf[j], cur_row, cur_col, color);
+                        cur_col++;
+                        if (cur_col >= VGA_WIDTH) { cur_col = 0; cur_row++; }
+                        if (cur_row >= VGA_HEIGHT) cur_row = 0;
+                    }
+                    break;
+                }
+                case 'c': {
+                    char c = (char)va_arg(args, int);
+                    term_putchar_at_color(c, cur_row, cur_col, color);
+                    cur_col++;
+                    if (cur_col >= VGA_WIDTH) { cur_col = 0; cur_row++; }
+                    if (cur_row >= VGA_HEIGHT) cur_row = 0;
+                    break;
+                }
+                case '%':
+                    term_putchar_at_color('%', cur_row, cur_col, color);
+                    cur_col++;
+                    if (cur_col >= VGA_WIDTH) { cur_col = 0; cur_row++; }
+                    if (cur_row >= VGA_HEIGHT) cur_row = 0;
+                    break;
+                default:
+                    term_putchar_at_color('%', cur_row, cur_col, color);
+                    cur_col++;
+                    term_putchar_at_color(fmt[i], cur_row, cur_col, color);
+                    cur_col++;
+                    if (cur_col >= VGA_WIDTH) { cur_col = 0; cur_row++; }
+                    if (cur_row >= VGA_HEIGHT) cur_row = 0;
+                    break;
+            }
+        } else {
+            term_putchar_at_color(fmt[i], cur_row, cur_col, color);
+            cur_col++;
+            if (cur_col >= VGA_WIDTH) { cur_col = 0; cur_row++; }
+            if (cur_row >= VGA_HEIGHT) cur_row = 0;
+        }
+    }
+
+    va_end(args);
+}
+
 
 char* term_readline(char* buffer, size_t max) {
     size_t i = 0;

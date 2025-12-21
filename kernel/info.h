@@ -4,6 +4,6 @@
 extern const char* kernel_version;
 extern char username[64];
 extern char hostname[64];
-extern char* directory;
+extern char directory[64];
 
 #endif

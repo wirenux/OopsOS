@@ -6,4 +6,5 @@
 - [x] add UP to get last command
 - [ ] simple BEEP
 - [x] LEFT & RIGHT for cursor
-- [ ] add pong
+- [x] add game
+- [ ] add score in game

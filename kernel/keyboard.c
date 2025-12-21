@@ -41,7 +41,6 @@ bool keyboard_data_available(void) {
     return inb(0x64) & 1;
 }
 
-// keyboard.c
 char handle_scancode(uint8_t scancode) {
     if (scancode == 0x2A || scancode == 0x36) {      // Shift press
         shift_pressed = true;
