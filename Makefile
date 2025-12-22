@@ -1,22 +1,17 @@
-# Cross-compiler
 AS=i686-elf-as
 CC=i686-elf-gcc
 
-# Directories
 BUILD_DIR=build
 KERNEL_DIR=kernel
 
-# --- CHANGES START HERE ---
-# 1. Automatically find all .c files in the kernel directory
+# Find all .c files in the kernel directory
 C_SOURCES=$(wildcard $(KERNEL_DIR)/*.c) $(wildcard $(KERNEL_DIR)/commands/*.c)
 
-# 2. Convert that list of .c files into a list of .o files in the build directory
-# Example: kernel/kernel.c -> build/kernel.o, kernel/libc.c -> build/libc.o
+# Convert the list of .c files into a list of .o files in the build directory
 OBJS=$(patsubst $(KERNEL_DIR)/%.c, $(BUILD_DIR)/%.o, $(C_SOURCES))
 OBJS += $(BUILD_DIR)/boot.o
-# --- CHANGES END HERE ---
 
-# Output binary and ISO
+# Output
 KERNEL_BIN=oopsos.bin
 ISO=OopsOs.iso
 
@@ -33,13 +28,12 @@ $(BUILD_DIR):
 $(BUILD_DIR)/boot.o: boot.s | $(BUILD_DIR)
 	$(AS) boot.s -o $(BUILD_DIR)/boot.o
 
-# --- NEW PATTERN RULE ---
-# This compiles ANY .c file in kernel/ into a .o file in build/
+# Compiles ANY .c file in kernel/ into a .o file in build/
 $(BUILD_DIR)/%.o: $(KERNEL_DIR)/%.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Link kernel + bootloader (now uses the $(OBJS) list)
+# Link kernel + bootloader
 $(KERNEL_BIN): $(OBJS)
 	$(CC) $(LDFLAGS) -o $(KERNEL_BIN) $(OBJS)
 	@echo "Checking multiboot..."
