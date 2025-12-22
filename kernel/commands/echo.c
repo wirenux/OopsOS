@@ -51,6 +51,5 @@ void cmd_echo(int argc, char* argv[]) {
         }
     }
 
-
     term_printf("\n");
 }

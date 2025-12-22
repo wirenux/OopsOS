@@ -26,5 +26,6 @@ uint8_t bcd_to_bin(uint8_t val);
 void rtc_read_time(struct rtc_time* t);
 void strcpy(char* dest, const char* src);
 uint32_t timestamp();
+unsigned int rand(void);
 
 #endif

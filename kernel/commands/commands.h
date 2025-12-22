@@ -13,7 +13,7 @@ void cmd_setup(int argc, char **argv);
 void cmd_shutdown(int argc, char **argv);
 void cmd_version(int argc, char **argv);
 void cmd_whoami(int argc, char **argv);
-void cmd_xmas_tree();
+void cmd_xmas_tree(int argc, char **argv);
 
 extern Command commands[];
 

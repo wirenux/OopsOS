@@ -55,18 +55,15 @@ void scroll(void) {
         return;
 
     // shift all rows up by 1
-    for (int y = 1; y < VGA_HEIGHT; y++) {
-        for (int x = 0; x < VGA_WIDTH; x++) {
-            uint16_t ch = vga_get_char_at(y, x);
-            vga_set_char_at(y - 1, x, ch);
-        }
-    }
+    for (int y = 1; y < VGA_HEIGHT; y++)
+        for (int x = 0; x < VGA_WIDTH; x++)
+            term_buffer[(y-1) * VGA_WIDTH + x] = term_buffer[y * VGA_WIDTH + x];
 
     // clear last row
     for (int x = 0; x < VGA_WIDTH; x++)
-        vga_set_char_at(VGA_HEIGHT - 1, x, ' ' | (VGA_COLOR_BLACK << 8));
+        term_buffer[(VGA_HEIGHT - 1) * VGA_WIDTH + x] = vga_entry(' ', terminal_color);
 
-    terminal_row = VGA_HEIGHT - 1;
+    terminal_row = VGA_HEIGHT - 1; // keep cursor in the last row
 }
 
 
@@ -99,20 +96,16 @@ void term_putchar_color(char c, uint8_t color) {
     if (c == '\n') {
         terminal_column = 0;
         terminal_row++;
-        if (terminal_row >= 25) terminal_row = 0; // simple scroll wrap
-        return;
+        if (terminal_row >= VGA_HEIGHT) scroll();
+    } else {
+        term_buffer[terminal_row * VGA_WIDTH + terminal_column] = vga_entry(c, color);
+        if (++terminal_column >= VGA_WIDTH) {
+            terminal_column = 0;
+            terminal_row++;
+            if (terminal_row >= VGA_HEIGHT) scroll();
+        }
     }
-
-    size_t index = terminal_row * 80 + terminal_column;
-    uint16_t* vga = (uint16_t*)0xB8000;
-    vga[index] = (uint16_t)color << 8 | (uint8_t)c;
-
-    terminal_column++;
-    if (terminal_column >= 80) {
-        terminal_column = 0;
-        terminal_row++;
-        if (terminal_row >= 25) terminal_row = 0;
-    }
+    update_cursor(terminal_row, terminal_column); // always update cursor
 }
 
 void term_putchar_at_color(char c, size_t row, size_t col, uint8_t color) {
