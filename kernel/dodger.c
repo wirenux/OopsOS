@@ -1,7 +1,7 @@
 #include "vga.h"
 #include "libc.h"
 #include "keyboard.h"
-#include "shell.h"
+#include "commands/commands.h"
 
 #define WIDTH 80
 #define HEIGHT 20
@@ -25,7 +25,9 @@ void delay(int loops) {
     for (volatile int i = 0; i < loops; i++);
 }
 
-void game_dodge() {
+void game_dodge(int argc, char* argv[]) {
+    (void)argc;
+    (void)argv;
     term_clear(VGA_COLOR_WHITE, VGA_COLOR_BLACK);
     score = 0;
     lines = 0;

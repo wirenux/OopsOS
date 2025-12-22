@@ -1,5 +1,6 @@
 #include "../libc.h"
 #include "commands.h"
+#include "../vga.h"
 
 void cmd_help(int argc, char **argv) {
     (void)argc;

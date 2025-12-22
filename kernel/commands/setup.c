@@ -1,4 +1,6 @@
 #include "../info.h"
+#include "../vga.h"
+#include "../libc.h"
 
 void cmd_setup(int argc, char **argv) {
     (void)argc;

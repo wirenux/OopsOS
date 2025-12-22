@@ -1,4 +1,5 @@
 #include "../libc.h"
+#include "../vga.h"
 
 void cmd_date(int argc, char **argv) { // date -> dd/mm/yy hh:mm:ss | date -t -> 176635....
     struct rtc_time t;

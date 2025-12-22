@@ -1,4 +1,5 @@
 #include "../info.h"
+#include "../vga.h"
 
 void cmd_version(int argc, char **argv) {
     (void)argc;

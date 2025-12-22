@@ -1,5 +1,6 @@
-#include "../vga.h"
 #include "commands.h"
+#include "../vga.h"
+#include "../libc.h"
 
 void cmd_reboot(int argc, char **argv) {
     (void)argc;

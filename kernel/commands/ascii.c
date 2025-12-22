@@ -1,3 +1,5 @@
+#include "../vga.h"
+
 void cmd_ascii(int argc, char **argv) {
     (void)argc;
     (void)argv;
