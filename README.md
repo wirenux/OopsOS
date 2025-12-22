@@ -6,7 +6,8 @@
 - [x] add UP to get last command
 - [x] LEFT & RIGHT for cursor
 - [x] add scroll
-- [ ] "man" page
+- [x] add Xmas tree cmd
+- [ ] "man" page like
 
 ### Keyboard
 
@@ -26,4 +27,4 @@
 
 - [x] add game
 - [x] add score in game
-- [ ] save highScore
+- [ ] save highScore (with a FS)
