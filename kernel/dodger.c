@@ -68,7 +68,10 @@ void game_dodge() {
             }
 
             // Quit game
-            if (c == 'q') break;
+            if (c == 'q') {
+                cmd_clear(0, NULL);
+                break;
+            }
 
             extended = 0; // reset after handling
         }
