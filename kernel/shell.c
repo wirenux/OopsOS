@@ -14,7 +14,7 @@ int buffer_index = 0;   // cursor position
 int buffer_length = 0;  // total chars in buffer
 
 
-void print_prompt(void) {
+void print_prompt(void) { // user@hostname:directory$
     term_printf_color(VGA_COLOR_LIGHT_GREEN, username);
     term_putchar_color('@', VGA_COLOR_LIGHT_GREEN | (VGA_COLOR_BLACK << 4));
     term_printf_color(VGA_COLOR_LIGHT_GREEN, hostname);

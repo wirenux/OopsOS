@@ -1,7 +1,10 @@
 #include "keyboard.h"
 #include "libc.h"
+#include "commands/commands.h"
+#include "shell.h"
 
 bool shift_pressed = false;
+bool ctrl_left_pressed = false;
 
 char scancode_to_ascii[128] = {
     0, 27, '1','2','3','4','5','6','7','8','9','0','-','=', '\b',
@@ -50,6 +53,14 @@ char handle_scancode(uint8_t scancode) {
         shift_pressed = false;
         return 0;
     }
+    if (scancode == 0x1D) {
+        ctrl_left_pressed = true;
+        return 0;
+    }
+    if (scancode == 0x9D) {
+        ctrl_left_pressed = false;
+        return 0;
+    }
 
     // ignore key releases
     if (scancode & 0x80) return 0;
@@ -64,6 +75,13 @@ char handle_scancode(uint8_t scancode) {
         } else {
             // handle special chars
             c = shift_map(c);
+        }
+    }
+    if (ctrl_left_pressed) {
+        if (c == 'l') {
+            cmd_clear(0, NULL);
+            print_prompt(); // print user@hostname:directory$
+            return 0; // prevent to print the char "l"
         }
     }
 

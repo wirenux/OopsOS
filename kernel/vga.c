@@ -42,6 +42,34 @@ void term_clear(uint8_t fg, uint8_t bg) {
     }
 }
 
+static inline uint16_t vga_get_char_at(size_t row, size_t col) {
+    return term_buffer[row * VGA_WIDTH + col];
+}
+
+static inline void vga_set_char_at(size_t row, size_t col, uint16_t val) {
+    term_buffer[row * VGA_WIDTH + col] = val;
+}
+
+void scroll(void) {
+    if (terminal_row < VGA_HEIGHT)
+        return;
+
+    // shift all rows up by 1
+    for (int y = 1; y < VGA_HEIGHT; y++) {
+        for (int x = 0; x < VGA_WIDTH; x++) {
+            uint16_t ch = vga_get_char_at(y, x);
+            vga_set_char_at(y - 1, x, ch);
+        }
+    }
+
+    // clear last row
+    for (int x = 0; x < VGA_WIDTH; x++)
+        vga_set_char_at(VGA_HEIGHT - 1, x, ' ' | (VGA_COLOR_BLACK << 8));
+
+    terminal_row = VGA_HEIGHT - 1;
+}
+
+
 void term_putchar(char character) {
     if (character == '\n') {
         terminal_column = 0;
@@ -321,32 +349,4 @@ void term_print_color(const char* str, uint8_t color) {
 
 void term_printf_color(int fg, const char* s) {
     term_print_color(s, fg | (VGA_COLOR_BLACK << 4));
-}
-
-static inline uint16_t vga_get_char_at(size_t row, size_t col) {
-    return term_buffer[row * VGA_WIDTH + col];
-}
-
-static inline void vga_set_char_at(size_t row, size_t col, uint16_t val) {
-    term_buffer[row * VGA_WIDTH + col] = val;
-}
-
-
-void scroll(void) {
-    if (terminal_row < VGA_HEIGHT)
-        return;
-
-    // shift all rows up by 1
-    for (int y = 1; y < VGA_HEIGHT; y++) {
-        for (int x = 0; x < VGA_WIDTH; x++) {
-            uint16_t ch = vga_get_char_at(y, x);
-            vga_set_char_at(y - 1, x, ch);
-        }
-    }
-
-    // clear last row
-    for (int x = 0; x < VGA_WIDTH; x++)
-        vga_set_char_at(VGA_HEIGHT - 1, x, ' ' | (VGA_COLOR_BLACK << 8));
-
-    terminal_row = VGA_HEIGHT - 1;
 }

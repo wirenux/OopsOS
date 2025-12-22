@@ -14,6 +14,6 @@ extern Command commands[];
 void term_shell(void);
 void execute_command(char* input);
 void game_dodge(void);
-void cmd_clear(int argc, char **argv);
+void print_prompt(void);
 
 #endif

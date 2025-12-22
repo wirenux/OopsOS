@@ -8,6 +8,10 @@
 - [x] add scroll
 - [ ] "man" page
 
+### Keyboard
+
+- [x] add ctrl+l -> cmd_clear(0, NULL);
+
 ### Sound
 
 - [ ] simple BEEP
