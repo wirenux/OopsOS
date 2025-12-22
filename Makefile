@@ -52,5 +52,22 @@ $(ISO): $(KERNEL_BIN)
 run: $(ISO)
 	qemu-system-i386 -cdrom $(ISO) -m 1024 -boot d -vga std
 
+# Usage: make write DEVICE=/dev/sdX
+write: $(ISO)
+ifeq ($(DEVICE),)
+	$(error You must specify DEVICE, e.g., make write DEVICE=/dev/sdX)
+endif
+	@echo "WARNING: This will erase all data on $(DEVICE)!"
+	@bash -c '\
+		read -p "Are you sure? (Y/n): " confirm; \
+		if [ "$$confirm" != "" ]; then \
+			echo "Aborted."; \
+		else \
+			echo "Writing $(ISO) to $(DEVICE)..."; \
+			sudo dd if=$(ISO) of=$(DEVICE) bs=4M status=progress conv=fsync; \
+			sync; \
+			echo "Done!"; \
+		fi'
+
 clean:
 	rm -rf $(BUILD_DIR) $(KERNEL_BIN) $(ISO) iso
