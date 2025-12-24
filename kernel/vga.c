@@ -343,3 +343,6 @@ void term_print_color(const char* str, uint8_t color) {
 void term_printf_color(int fg, const char* s) {
     term_print_color(s, fg | (VGA_COLOR_BLACK << 4));
 }
+void term_prinf_color_all(int fg, int bg , const char* s) {
+    term_print_color(s, fg | (bg << 4));
+}

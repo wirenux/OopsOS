@@ -8,6 +8,7 @@ Command commands[] = {
     {"dodger",      NULL,                             game_dodge},
     {"echo",        "Print something",                cmd_echo},
     {"help",        "Show this help",                 cmd_help},
+    {"info",        "Show all info",                  cmd_info},
     {"reboot",      "Reboot the system",              cmd_reboot},
     {"setup",       "Setup all",                      cmd_setup},
     {"shutdown",    "Shutdown the system",            cmd_shutdown},

@@ -36,5 +36,6 @@ void term_printf_color(int fg, const char* s);
 void term_printf_at(size_t row, size_t col, const char* fmt, ...);
 void term_printf_at_color(size_t row, size_t col, uint8_t color, const char* fmt, ...);
 void term_putchar_at_color(char c, size_t row, size_t col, uint8_t color);
+void term_prinf_color_all(int fg, int bg , const char* s);
 
 #endif
