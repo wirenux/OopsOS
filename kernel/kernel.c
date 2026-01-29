@@ -5,14 +5,17 @@
 #include "libc.h"
 #include "info.h"
 #include "commands/commands.h"
+#include "libc.h"
 
 void kernel_main(void) {
+    struct rtc_time t;
+    rtc_read_time(&t);
     // Init
     term_init();
 
     // Splash screen
     cmd_ascii(0, NULL);
-    term_printf("   OopsOS v%s (c) 2026 WireNux\n", kernel_version);
+    term_printf("   OopsOS v%s (c) %d WireNux\n", kernel_version, t.year);
     term_printf("   Press ENTER to start...\n");
 
     // Wait for ENTER
