@@ -1,20 +1,7 @@
 #include "../vga.h"
 #include "../libc.h"
 
-/*
-    *
-   /.\
-  /o..\
-  /..o\
- /.o..o\
- /...o.\
-/..o....\
-^^^[_]^^^
-*/
-
-void cmd_xmas_tree(int argc, char **argv) {
-    (void)argc;
-    (void)argv;
+void cmd_xmas_tree() {
     term_printf_color(VGA_COLOR_LIGHT_BROWN, "    *\n"); // yellow star
 
     const char* tree_lines[] = {

@@ -74,7 +74,7 @@ void execute_command(char* input) {
         }
     }
 
-    term_printf("OopsOS: command not found: %s \n", argv[0]);
+    term_printf("-fsh: %s: not found \n", argv[0]);
 }
 
 void term_shell(void) {

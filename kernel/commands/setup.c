@@ -2,9 +2,7 @@
 #include "../vga.h"
 #include "../libc.h"
 
-void cmd_setup(int argc, char **argv) {
-    (void)argc;
-    (void)argv;
+void cmd_setup() {
     char buf[64];
 
     term_printf("Enter username: ");
