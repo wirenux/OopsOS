@@ -15,7 +15,7 @@ void kernel_main(void) {
 
     // Splash screen
     cmd_ascii(0, NULL);
-    term_printf("   OopsOS v%s (c) %d WireNux\n", kernel_version, t.year);
+    term_printf("   OopsOS v%s (x86_64) (c) %d WireNux\n", kernel_version, t.year);
     term_printf("   Press ENTER to start...\n");
 
     // Wait for ENTER
