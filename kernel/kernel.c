@@ -12,7 +12,7 @@ void kernel_main(void) {
 
     // Splash screen
     cmd_ascii(0, NULL);
-    term_printf("   OopsOS v%s (c) 2025 squach90\n", kernel_version);
+    term_printf("   OopsOS v%s (c) 2026 WireNux\n", kernel_version);
     term_printf("   Press ENTER to start...\n");
 
     // Wait for ENTER
