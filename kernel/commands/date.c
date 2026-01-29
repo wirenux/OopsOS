@@ -11,8 +11,8 @@ void cmd_date(int argc, char **argv) { // date -> dd/mm/yy hh:mm:ss | date -t ->
     }
 
     term_printf(
-        "%d/%d/%d %d:%d:%d\n",
-        t.day, t.month, t.year,
-        t.hour, t.min, t.sec
+        "%s/%s/%d %s:%s:%s\n",
+        t.f_day, t.f_month, t.year,
+        t.f_hour, t.f_min, t.f_sec
     );
 }

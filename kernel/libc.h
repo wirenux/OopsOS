@@ -11,6 +11,7 @@ struct rtc_time {
     uint8_t day;
     uint8_t month;
     uint16_t year;
+    char f_sec[3], f_min[3], f_hour[3], f_day[3], f_month[3]; // formated string
 };
 
 int strcmp(const char* s1, const char* s2);

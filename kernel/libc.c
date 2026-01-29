@@ -108,7 +108,7 @@ uint8_t rtc_read(uint8_t reg) {
 }
 
 uint8_t bcd_to_bin(uint8_t val) {
-    return (val & 0x0F) + ((val / 16) * 10);
+    return ((val >> 4) * 10) + (val & 0x0F);
 }
 
 void rtc_read_time(struct rtc_time* t) {
@@ -139,6 +139,26 @@ void rtc_read_time(struct rtc_time* t) {
     t->day   = day;
     t->month = month;
     t->year  = 2000 + year;
+
+    t->f_sec[0] = (sec / 10) + '0';
+    t->f_sec[1] = (sec % 10) + '0';
+    t->f_sec[2] = '\0';
+
+    t->f_min[0] = (min / 10) + '0';
+    t->f_min[1] = (min % 10) + '0';
+    t->f_min[2] = '\0';
+
+    t->f_hour[0] = (hour / 10) + '0';
+    t->f_hour[1] = (hour % 10) + '0';
+    t->f_hour[2] = '\0';
+
+    t->f_day[0] = (day / 10) + '0';
+    t->f_day[1] = (day % 10) + '0';
+    t->f_day[2] = '\0';
+
+    t->f_month[0] = (month / 10) + '0';
+    t->f_month[1] = (month % 10) + '0';
+    t->f_month[2] = '\0';
 }
 
 int is_leap_year(int year) {
