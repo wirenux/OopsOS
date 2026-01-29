@@ -170,6 +170,7 @@ void term_shell(void) {
                 if (buffer_index > 0) {
                     buffer_index--;
                     terminal_column--;
+                    command_buffer[buffer_index] = '\0';
                     term_putchar_at(' ', terminal_row, terminal_column);
                 }
                 continue;

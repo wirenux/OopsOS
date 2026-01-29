@@ -1,5 +1,16 @@
 #include "libc.h"
 
+void strcat(char* dest, const char* src) {
+    while (*dest) {
+        dest++;
+    }
+
+    while (*src) {
+        *dest++ = *src++;
+    }
+    *dest = '\0';
+}
+
 int strcmp(const char* s1, const char* s2) {        // ret 0 if s1 & s2 -> same
     while (*s1 && (*s1 == *s2)) {
         s1++;
