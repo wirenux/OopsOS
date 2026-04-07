@@ -1,6 +1,8 @@
 #include "../vga.h"
 
-void cmd_ascii() {
+void cmd_ascii(int argc, char **argv) {
+    (void) argc;
+    (void) argv;
     term_printf(
         "   ___                   ___  ____\n"
         "  / _ \\  ___  _ __  ___ / _ \\/ ___|\n"

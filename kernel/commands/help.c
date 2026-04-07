@@ -2,7 +2,9 @@
 #include "commands.h"
 #include "../vga.h"
 
-void cmd_help() {
+void cmd_help(int argc, char **argv) {
+    (void) argc;
+    (void) argv;
     term_printf("Build-in commands:\n");
     term_printf("------------------\n        ");
 

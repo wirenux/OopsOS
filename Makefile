@@ -4,6 +4,9 @@ CC=i686-elf-gcc
 BUILD_DIR=build
 KERNEL_DIR=kernel
 
+GRUB_FILE=i686-elf-grub-file
+GRUB_MKRESCUE=i686-elf-grub-mkrescue
+
 # Find all .c files in the kernel directory
 C_SOURCES=$(wildcard $(KERNEL_DIR)/*.c) $(wildcard $(KERNEL_DIR)/commands/*.c)
 
@@ -37,7 +40,7 @@ $(BUILD_DIR)/%.o: $(KERNEL_DIR)/%.c
 $(KERNEL_BIN): $(OBJS)
 	$(CC) $(LDFLAGS) -o $(KERNEL_BIN) $(OBJS)
 	@echo "Checking multiboot..."
-	@if grub-file --is-x86-multiboot $(KERNEL_BIN) || grub2-file --is-x86-multiboot $(KERNEL_BIN); then \
+	@if $(GRUB_FILE) --is-x86-multiboot $(KERNEL_BIN) || $(GRUB_MKRESCUE) --is-x86-multiboot $(KERNEL_BIN); then \
 		echo "Multiboot confirmed"; \
 	else \
 		echo "ERROR: The file is not multiboot"; exit 1; \
@@ -47,7 +50,7 @@ $(ISO): $(KERNEL_BIN)
 	@mkdir -p iso/boot/grub
 	@cp $(KERNEL_BIN) iso/boot/
 	@echo 'menuentry "OopsOs" { multiboot /boot/oopsos.bin }' > iso/boot/grub/grub.cfg
-	grub-mkrescue -o $(ISO) iso/ || grub2-mkrescue -o $(ISO) iso/
+	$(GRUB_MKRESCUE) -o $(ISO) iso/ || grub2-mkrescue -o $(ISO) iso/
 
 run: $(ISO)
 	qemu-system-i386 -cdrom $(ISO) -m 1024 -boot d -vga std
